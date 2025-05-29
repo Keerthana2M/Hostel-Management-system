@@ -1,0 +1,23 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<html>
+<head>
+  <title>Generate Reports</title>
+</head>
+<body>
+<h2>Select Report Type</h2>
+<form action="ReportServlet" method="post">
+  <input type="radio" name="reportType" value="pendingFees" required> Students with Pending Fees<br><br>
+
+  <input type="radio" name="reportType" value="roomStudents" required> Students in a Particular Room<br>
+  Room Number: <input type="text" name="roomNumber"><br><br>
+
+  <input type="radio" name="reportType" value="dateRange" required> Students Admitted Between Dates<br>
+  From: <input type="date" name="startDate"><br>
+  To: <input type="date" name="endDate"><br><br>
+
+  <input type="submit" value="Generate Report">
+</form>
+<br>
+<a href="index.jsp">Back to Home</a>
+</body>
+</html>

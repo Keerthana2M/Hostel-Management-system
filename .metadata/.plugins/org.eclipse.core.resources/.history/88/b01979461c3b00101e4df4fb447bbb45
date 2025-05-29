@@ -1,0 +1,33 @@
+package com.servlet;
+
+import com.dao.StudentDAO;
+import com.model.Student;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+public class DisplayStudentsServlet extends HttpServlet {
+    private HostelDAO studentDAO;
+
+    public void init() {
+    	HostelDAO = new HostelDAO();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<student> students = null;
+        try {
+            students = studentDAO.getAllStudents(); // or selectAllStudents() if you used the wrapper method
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Optional: Forward to an error page or set an error message
+            request.setAttribute("error", "Unable to retrieve students from database.");
+        }
+
+        request.setAttribute("studentsList", students);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("studentdisplay.jsp");
+        dispatcher.forward(request, response);
+    }
+}

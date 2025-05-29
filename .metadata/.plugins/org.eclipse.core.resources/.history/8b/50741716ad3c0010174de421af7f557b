@@ -1,0 +1,96 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hostel Management System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f7f3f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            max-width: 480px;
+            width: 100%;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 12px 24px rgba(255, 77, 109, 0.25);
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            margin-bottom: 35px;
+            font-weight: 600;
+            font-size: 2.8rem;
+            letter-spacing: 1.2px;
+            text-shadow: 0 2px 4px rgba(255, 77, 109, 0.4);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        li {
+            margin: 0;
+        }
+
+        a {
+            display: block;
+            padding: 15px 0;
+            background: #ff4d6d;
+            color: white;
+            font-weight: 600;
+            font-size: 1.15rem;
+            border-radius: 40px;
+            text-decoration: none;
+            box-shadow: 0 6px 12px rgba(255, 77, 109, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        a:hover, a:focus {
+            background: #ff6b81;
+            box-shadow: 0 10px 18px rgba(255, 107, 129, 0.5);
+            transform: translateY(-3px);
+            outline: none;
+        }
+
+        @media (min-width: 480px) {
+            ul {
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+
+            a {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 Hostel Management System</h1>
+        <ul>
+            <li><a href="studentadd.jsp">Add Student</a></li>
+            <li><a href="DisplayStudentsServlet">View Students</a></li>
+            <li><a href="studentupdate.jsp">Update Student</a></li>
+            <li><a href="studentdelete.jsp">Delete Student</a></li>
+            <li><a href="ReportCriteriaServlet">Generate Report</a></li>
+        </ul>
+    </div>
+</body>
+</html>

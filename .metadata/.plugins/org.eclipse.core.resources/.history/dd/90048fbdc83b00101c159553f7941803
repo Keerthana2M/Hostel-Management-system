@@ -1,0 +1,74 @@
+package com.servlet;
+
+import com.dao.HostelDAO;
+import com.model.student;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+@WebServlet("/AddStudentServlet")
+public class AddStudentServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+
+    private HostelDAO hostelDAO;
+
+    @Override
+    public void init() throws ServletException {
+        hostelDAO = new HostelDAO();  // Initialize DAO
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // Set response content type
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        try {
+            // Read form parameters
+            String idStr = request.getParameter("studentId");
+            String name = request.getParameter("studentName");
+            String roomNumber = request.getParameter("roomNumber");
+            String admissionDate = request.getParameter("admissionDate"); // Expected format: yyyy-MM-dd
+            String feesPaidStr = request.getParameter("feesPaid");
+            String pendingFeesStr = request.getParameter("pendingFees");
+
+            // Validate all fields
+            if (idStr == null || name == null || roomNumber == null || admissionDate == null ||
+                feesPaidStr == null || pendingFeesStr == null ||
+                idStr.trim().isEmpty() || name.trim().isEmpty() || roomNumber.trim().isEmpty() ||
+                admissionDate.trim().isEmpty() || feesPaidStr.trim().isEmpty() || pendingFeesStr.trim().isEmpty()) {
+                out.println("<h3 style='color:red;'>Error: All fields are required.</h3>");
+                return;
+            }
+
+            // Parse values
+            int id = Integer.parseInt(idStr);
+            double feesPaid = Double.parseDouble(feesPaidStr);
+            double pendingFees = Double.parseDouble(pendingFeesStr);
+
+            // Create student object
+            student s = new student(id, name, roomNumber, admissionDate, feesPaid, pendingFees);
+
+            // Insert into database
+            hostelDAO.insertStudent(s);
+
+            // Success message or redirect
+            out.println("<h3 style='color:green;'>Student added successfully!</h3>");
+            out.println("<a href='index.jsp'>Back to Home</a>");
+
+        } catch (NumberFormatException e) {
+            out.println("<h3 style='color:red;'>Invalid number format in input: " + e.getMessage() + "</h3>");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            out.println("<h3 style='color:red;'>Database error: " + e.getMessage() + "</h3>");
+            e.printStackTrace();
+        }
+    }
+}

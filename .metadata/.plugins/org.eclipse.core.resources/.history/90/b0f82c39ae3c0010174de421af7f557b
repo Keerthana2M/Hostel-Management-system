@@ -1,0 +1,97 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hostel Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #fce3ec, #ffe5ec);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 50px;
+            font-size: 2.5em;
+            color: #ff4d6d;
+            text-shadow: 1px 1px 2px #fff0f3;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 40px;
+        }
+
+        li {
+            margin: 15px 0;
+        }
+
+        a {
+            text-decoration: none;
+            background-color: #ff4d6d;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        a:hover {
+            background-color: #ff6b81;
+            transform: scale(1.05);
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff0f3;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            margin-top: 60px;
+        }
+
+        /* Success message style */
+        .success-message {
+            padding: 10px;
+            margin: 10px auto 30px auto;
+            max-width: 500px;
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1>Welcome to Hostel Management System 🏠</h1>
+
+        <%-- Success message display --%>
+        <%
+            String message = (String) session.getAttribute("message");
+            if (message != null) {
+        %>
+            <div class="success-message"><%= message %></div>
+        <%
+                session.removeAttribute("message"); // Clear message after showing
+            }
+        %>
+
+        <ul>
+            <li><a href="studentadd.jsp">Add Student</a></li>
+            <li><a href="DisplayStudentsServlet">View Students</a></li>
+            <li><a href="studentupdate.jsp">Update Student</a></li>
+            <li><a href="studentdelete.jsp">Delete Student</a></li>
+            <li><a href="ReportCriteriaServlet">Generate Report</a></li>
+        </ul>
+    </div>
+</body>
+</html>

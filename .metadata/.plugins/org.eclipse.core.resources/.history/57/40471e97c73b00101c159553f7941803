@@ -1,0 +1,16 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<html>
+<head>
+  <title>Delete Student</title>
+</head>
+<body>
+<h2>Delete Student</h2>
+<form action="DeleteStudentServlet" method="post">
+  <label for="id">Enter Student ID to Delete:</label><br>
+  <input type="number" name="id" required><br><br>
+  <input type="submit" value="Delete Student">
+</form>
+<br>
+<a href="index.jsp">Back to Home</a>
+</body>
+</html>

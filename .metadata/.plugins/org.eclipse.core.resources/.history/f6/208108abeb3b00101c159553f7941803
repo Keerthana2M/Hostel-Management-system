@@ -1,0 +1,52 @@
+package com.servlet;
+
+import com.dao.StudentDAO;
+import com.model.student;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+
+@WebServlet("/UpdateStudentServlet")
+public class UpdateStudentServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String name = request.getParameter("name");
+            int age = Integer.parseInt(request.getParameter("age"));
+            String gender = request.getParameter("gender");
+            String email = request.getParameter("email");
+            String phone = request.getParameter("phone");
+            String roomNumber = request.getParameter("roomNumber");
+            String admissionDate = request.getParameter("admissionDate");
+            String department = request.getParameter("department");
+            double feesPaid = Double.parseDouble(request.getParameter("feesPaid"));
+            double pendingFees = Double.parseDouble(request.getParameter("pendingFees"));
+            String address = request.getParameter("address");
+
+            student s = new student();
+            s.setId(id);
+            s.setName(name);
+            s.setAge(age);
+            s.setGender(gender);
+            s.setEmail(email);
+            s.setPhone(phone);
+            s.setRoomNumber(roomNumber);
+            s.setAdmissionDate(admissionDate);
+            s.setDepartment(department);
+            s.setFeesPaid(feesPaid);
+            s.setPendingFees(pendingFees);
+            s.setAddress(address);
+
+            new StudentDAO().updateStudent(s);
+            request.setAttribute("message", "Student updated successfully.");
+        } catch (Exception e) {
+            request.setAttribute("message", "Error: " + e.getMessage());
+        }
+        request.getRequestDispatcher("studentupdate.jsp").forward(request, response);
+    }
+}

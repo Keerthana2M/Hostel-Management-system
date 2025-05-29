@@ -1,0 +1,61 @@
+package com.servlet;
+
+import com.dao.HostelDAO;
+import com.model.student;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+@WebServlet("/generateReport")
+public class ReportServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    private HostelDAO hostelDAO;
+
+    @Override
+    public void init() {
+        hostelDAO = new HostelDAO();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String reportType = request.getParameter("reportType");
+        List<student> result = null;
+
+        try {
+            switch (reportType) {
+                case "pendingFees":
+                    result = hostelDAO.getStudentsWithPendingFees();
+                    break;
+
+                case "byRoom":
+                    String room = request.getParameter("roomNumber");
+                    result = hostelDAO.getStudentsByRoom(room);
+                    break;
+
+                case "byDate":
+                    String from = request.getParameter("fromDate");
+                    String to = request.getParameter("toDate");
+                    result = hostelDAO.getStudentsByDateRange(from, to);
+                    break;
+
+                default:
+                    request.setAttribute("error", "Invalid report type selected.");
+                    break;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Database error occurred while generating report.");
+        }
+
+        request.setAttribute("students", result);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("report_result.jsp");
+        dispatcher.forward(request, response);
+    }
+}

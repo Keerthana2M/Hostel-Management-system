@@ -1,0 +1,58 @@
+package com.servlet;
+
+import com.dao.HostelDAO;
+import com.model.student;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.sql.SQLException;
+
+@WebServlet("/addStudent")
+public class AddStudentServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    private HostelDAO hostelDAO;
+
+    @Override
+    public void init() {
+        hostelDAO = new HostelDAO();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            // Retrieve form data
+            int id = Integer.parseInt(request.getParameter("id"));
+            String name = request.getParameter("name");
+            String roomNumber = request.getParameter("roomNumber");
+            String admissionDate = request.getParameter("admissionDate");
+            double feesPaid = Double.parseDouble(request.getParameter("feesPaid"));
+            double pendingFees = Double.parseDouble(request.getParameter("pendingFees"));
+
+            // Create student object
+            student studentObj = new student(id, name, roomNumber, admissionDate, feesPaid, pendingFees);
+
+            // Insert student (note the method name is insertStudent, not addStudent)
+            hostelDAO.insertStudent(studentObj);
+
+            // Redirect to the display page on success
+            response.sendRedirect("studentdisplay.jsp");
+        } catch (SQLException e) {
+            // Log SQL error and show user-friendly message
+            e.printStackTrace();
+            response.getWriter().println("Database error: Unable to add student.");
+        } catch (NumberFormatException e) {
+            // Handle invalid number formats
+            e.printStackTrace();
+            response.getWriter().println("Invalid input: Please check the numeric fields.");
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+            response.getWriter().println("Error: " + e.getMessage());
+        }
+    }
+}

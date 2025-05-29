@@ -1,0 +1,144 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.model.student" %>
+<%@ page import="com.dao.HostelDAO" %>
+
+<%
+  String idParam = request.getParameter("id");
+  student student = null;
+
+  if (idParam != null) {
+    int id = Integer.parseInt(idParam);
+    HostelDAO dao = new HostelDAO();
+    try {
+      student = dao.getStudentById(id);
+    } catch (Exception e) {
+      out.println("<p style='color: red;'>Error: " + e.getMessage() + "</p>");
+    }
+  }
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Update Student</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #fce4ec, #e1f5fe);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h2 {
+      color: #f06292;
+      margin-bottom: 30px;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 15px;
+      color: #444;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus {
+      border-color: #64b5f6;
+      outline: none;
+    }
+
+    input[type="submit"] {
+      background-color: #f06292;
+      color: white;
+      font-weight: bold;
+      margin-top: 25px;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 7px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #e91e63;
+    }
+
+    a {
+      margin-top: 20px;
+      display: inline-block;
+      color: #4a90e2;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .not-found {
+      color: #e53935;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>✏️ Update Student Details</h2>
+
+  <%
+    if (student != null) {
+  %>
+  <form action="UpdateStudentServlet" method="post">
+    <input type="hidden" name="id" value="<%= student.getId() %>">
+
+    <label for="name">Student Name:</label>
+    <input type="text" name="name" value="<%= student.getName() %>" required>
+
+    <label for="roomNumber">Room Number:</label>
+    <input type="text" name="roomNumber" value="<%= student.getRoomNumber() %>" required>
+
+    <label for="admissionDate">Admission Date:</label>
+    <input type="date" name="admissionDate" value="<%= student.getAdmissionDate() %>" required>
+
+    <label for="feesPaid">Fees Paid:</label>
+    <input type="number" step="0.01" name="feesPaid" value="<%= student.getFeesPaid() %>" required>
+
+    <label for="pendingFees">Pending Fees:</label>
+    <input type="number" step="0.01" name="pendingFees" value="<%= student.getPendingFees() %>" required>
+
+    <input type="submit" value="Update Student">
+  </form>
+  <% } else { %>
+    <p class="not-found">Student not found or invalid ID.</p>
+  <% } %>
+
+  <a href="index.jsp">⬅️ Back to Home</a>
+</body>
+</html>

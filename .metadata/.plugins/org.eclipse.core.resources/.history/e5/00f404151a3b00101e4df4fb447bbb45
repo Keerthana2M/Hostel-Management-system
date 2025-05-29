@@ -1,0 +1,38 @@
+package servlet;
+
+import dao.HostelDAO;
+import model.Student;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+
+@WebServlet("/addStudent")
+public class AddStudentServlet extends HttpServlet {
+    private HostelDAO hostelDAO;
+
+    @Override
+    public void init() {
+        hostelDAO = new HostelDAO();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Retrieve form data
+        int id = Integer.parseInt(request.getParameter("id"));
+        String name = request.getParameter("name");
+        String roomNumber = request.getParameter("roomNumber");
+        String admissionDate = request.getParameter("admissionDate");
+        double feesPaid = Double.parseDouble(request.getParameter("feesPaid"));
+        double pendingFees = Double.parseDouble(request.getParameter("pendingFees"));
+
+        Student student = new Student(id, name, roomNumber, admissionDate, feesPaid, pendingFees);
+
+        // No try-catch needed here if no SQLException thrown
+        hostelDAO.insertStudent(student);
+
+        response.sendRedirect("studentdisplay.jsp"); // redirect to display all students
+    }
+}

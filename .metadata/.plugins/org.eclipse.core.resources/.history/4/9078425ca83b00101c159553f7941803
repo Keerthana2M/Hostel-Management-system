@@ -1,0 +1,65 @@
+package com.servlet;
+
+import com.dao.HostelDAO;
+import com.model.student;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+@WebServlet("/addStudent")
+public class AddStudentServlet extends HttpServlet {
+
+    private HostelDAO hostelDAO;
+
+    @Override
+    public void init() throws ServletException {
+        hostelDAO = new HostelDAO();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        try {
+            // Safely parse form parameters
+            String idStr = request.getParameter("studentId");
+            String feesPaidStr = request.getParameter("feesPaid");
+            String pendingFeesStr = request.getParameter("pendingFees");
+
+            int id = (idStr != null && !idStr.trim().isEmpty()) ? Integer.parseInt(idStr) : 0;
+            double feesPaid = (feesPaidStr != null && !feesPaidStr.trim().isEmpty()) ? Double.parseDouble(feesPaidStr) : 0.0;
+            double pendingFees = (pendingFeesStr != null && !pendingFeesStr.trim().isEmpty()) ? Double.parseDouble(pendingFeesStr) : 0.0;
+
+            String name = request.getParameter("studentName");
+            String roomNumber = request.getParameter("roomNumber");
+            String admissionDate = request.getParameter("admissionDate"); // yyyy-MM-dd
+
+            // Input validation (optional)
+            if (name == null || roomNumber == null || admissionDate == null ||
+                name.trim().isEmpty() || roomNumber.trim().isEmpty() || admissionDate.trim().isEmpty()) {
+                out.println("<h3>Error: All fields are required.</h3>");
+                return;
+            }
+
+            student s = new student(id, name, roomNumber, admissionDate, feesPaid, pendingFees);
+
+            hostelDAO.insertStudent(s);
+
+            out.println("<h3>Student added successfully!</h3>");
+            // response.sendRedirect("studentList.jsp");
+
+        } catch (NumberFormatException e) {
+            out.println("<h3>Invalid number format in input: " + e.getMessage() + "</h3>");
+        } catch (SQLException e) {
+            out.println("<h3>Database error: " + e.getMessage() + "</h3>");
+            e.printStackTrace();
+        }
+    }
+}

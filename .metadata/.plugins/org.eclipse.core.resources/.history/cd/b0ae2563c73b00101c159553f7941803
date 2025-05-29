@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="com.model.student" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student List</title>
+</head>
+<body>
+<h2>Hostel Students</h2>
+<a href="studentadd.jsp">Add New Student</a><br><br>
+
+<table border="1" style="border-collapse: collapse; padding: 8px;">
+
+  <tr>
+    <th>Student ID</th>
+    <th>Name</th>
+    <th>Room Number</th>
+    <th>Admission Date</th>
+    <th>Fees Paid</th>
+    <th>Pending Fees</th>
+  </tr>
+
+  <%
+    List<student> students = (List<student>) request.getAttribute("studentsList");
+    if (students != null && !students.isEmpty()) {
+      for (student s : students) {
+  %>
+  <tr>
+    <td><%= s.getId() %></td>
+    <td><%= s.getName() %></td>
+    <td><%= s.getRoomNumber() %></td>
+    <td><%= s.getAdmissionDate() %></td>
+    <td><%= s.getFeesPaid() %></td>
+    <td><%= s.getPendingFees() %></td>
+  </tr>
+  <%
+      }
+    } else {
+  %>
+  <tr>
+    <td colspan="6">No students found.</td>
+  </tr>
+  <%
+    }
+  %>
+</table>
+</body>
+</html>

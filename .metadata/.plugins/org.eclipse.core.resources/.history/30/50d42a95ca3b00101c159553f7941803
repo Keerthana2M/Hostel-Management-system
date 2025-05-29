@@ -1,0 +1,108 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate Reports</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e1f5fe, #fce4ec);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h2 {
+      color: #f06292;
+      margin-bottom: 30px;
+    }
+
+    form {
+      background-color: #ffffff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 550px;
+    }
+
+    input[type="radio"] {
+      margin-right: 8px;
+    }
+
+    label, input[type="radio"] {
+      font-size: 1rem;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="date"] {
+      width: calc(100% - 10px);
+      padding: 8px;
+      margin: 6px 0 15px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    input[type="submit"] {
+      background-color: #f06292;
+      color: white;
+      font-weight: bold;
+      margin-top: 15px;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 7px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #e91e63;
+    }
+
+    a {
+      margin-top: 20px;
+      display: inline-block;
+      color: #4a90e2;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h2>📊 Generate Student Report</h2>
+
+  <form action="ReportServlet" method="post">
+    <label>
+      <input type="radio" name="reportType" value="pendingFees" required>
+      Students with Pending Fees
+    </label><br><br>
+
+    <label>
+      <input type="radio" name="reportType" value="roomStudents" required>
+      Students in a Particular Room
+    </label><br>
+    <input type="text" name="roomNumber" placeholder="Enter room number"><br><br>
+
+    <label>
+      <input type="radio" name="reportType" value="dateRange" required>
+      Students Admitted Between Dates
+    </label><br>
+    From: <input type="date" name="startDate"><br>
+    To: <input type="date" name="endDate"><br><br>
+
+    <input type="submit" value="Generate Report">
+  </form>
+
+  <a href="index.jsp">⬅️ Back to Home</a>
+</body>
+</html>

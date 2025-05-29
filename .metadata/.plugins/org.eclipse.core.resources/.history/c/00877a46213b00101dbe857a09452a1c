@@ -1,0 +1,131 @@
+package com.dao;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import com.model.student;
+
+public class HostelDAO {
+
+    private final String jdbcURL = "jdbc:mysql://localhost:3306/hostel_db";
+    private final String jdbcUsername = "root";
+    private final String jdbcPassword = ""; // Put your MySQL password here
+
+    private Connection getConnection() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver"); // For MySQL 8.x
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
+    }
+
+    // 1. Add Student
+    public boolean addStudent(student s) {
+        String sql = "INSERT INTO HostelStudents (StudentID, StudentName, RoomNumber, AdmissionDate, FeesPaid, PendingFees) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, s.getId());
+            stmt.setString(2, s.getName());
+            stmt.setString(3, s.getRoomNumber());
+            stmt.setDate(4, Date.valueOf(s.getAdmissionDate())); // "yyyy-MM-dd"
+            stmt.setDouble(5, s.getFeesPaid());
+            stmt.setDouble(6, s.getPendingFees());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 2. Update Student
+    public boolean updateStudent(student s) {
+        String sql = "UPDATE HostelStudents SET StudentName=?, RoomNumber=?, AdmissionDate=?, FeesPaid=?, PendingFees=? WHERE StudentID=?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, s.getName());
+            stmt.setString(2, s.getRoomNumber());
+            stmt.setDate(3, Date.valueOf(s.getAdmissionDate()));
+            stmt.setDouble(4, s.getFeesPaid());
+            stmt.setDouble(5, s.getPendingFees());
+            stmt.setInt(6, s.getId());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 3. Delete Student
+    public boolean deleteStudent(int studentID) {
+        String sql = "DELETE FROM HostelStudents WHERE StudentID=?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, studentID);
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 4. Get All Students
+    public List<student> getAllStudents() {
+        List<student> list = new ArrayList<>();
+        String sql = "SELECT * FROM HostelStudents";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                student s = new student();
+                s.setId(rs.getInt("StudentID"));
+                s.setName(rs.getString("StudentName"));
+                s.setRoomNumber(rs.getString("RoomNumber"));
+                s.setAdmissionDate(rs.getDate("AdmissionDate").toString());
+                s.setFeesPaid(rs.getDouble("FeesPaid"));
+                s.setPendingFees(rs.getDouble("PendingFees"));
+
+                list.add(s);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // 5. Get Student by ID
+    public student getStudentById(int id) {
+        student s = null;
+        String sql = "SELECT * FROM HostelStudents WHERE StudentID=?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                s = new student();
+                s.setId(rs.getInt("StudentID"));
+                s.setName(rs.getString("StudentName"));
+                s.setRoomNumber(rs.getString("RoomNumber"));
+                s.setAdmissionDate(rs.getDate("AdmissionDate").toString());
+                s.setFeesPaid(rs.getDouble("FeesPaid"));
+                s.setPendingFees(rs.getDouble("PendingFees"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return s;
+    }
+}

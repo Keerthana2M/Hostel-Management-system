@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add New Student</title>
+</head>
+<body>
+<h2>Add New Student</h2>
+<form action="addStudent" method="post">
+  <label>Student ID:</label><br>
+  <input type="number" name="id" required><br><br>
+
+  <label>Student Name:</label><br>
+  <input type="text" name="name" required><br><br>
+
+  <label>Room Number:</label><br>
+  <input type="text" name="roomNumber" required><br><br>
+
+  <label>Admission Date:</label><br>
+  <input type="date" name="admissionDate" required><br><br>
+
+  <label>Fees Paid:</label><br>
+  <input type="number" step="0.01" name="feesPaid" required><br><br>
+
+  <label>Pending Fees:</label><br>
+  <input type="number" step="0.01" name="pendingFees" required><br><br>
+
+  <input type="submit" value="Add Student">
+</form>
+<br>
+<a href="studentdisplay.jsp">Back to Student List</a>
+</body>
+</html>

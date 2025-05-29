@@ -1,0 +1,57 @@
+package com.servlet;
+
+import com.dao.HostelDAO;
+import com.model.student;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+@WebServlet("/addStudent")
+public class AddStudentServlet extends HttpServlet {
+
+    private HostelDAO hostelDAO;
+
+    @Override
+    public void init() throws ServletException {
+        hostelDAO = new HostelDAO();  // Initialize DAO
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // Set response content type
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        try {
+            // Read form parameters
+            int id = Integer.parseInt(request.getParameter("studentId"));
+            String name = request.getParameter("studentName");
+            String roomNumber = request.getParameter("roomNumber");
+            String admissionDate = request.getParameter("admissionDate"); // Expected format: yyyy-MM-dd
+            double feesPaid = Double.parseDouble(request.getParameter("feesPaid"));
+            double pendingFees = Double.parseDouble(request.getParameter("pendingFees"));
+
+            // Create student object
+            student s = new student(id, name, roomNumber, admissionDate, feesPaid, pendingFees);
+
+            // Insert into database
+            hostelDAO.insertStudent(s);
+
+            // Send success response or redirect
+            out.println("<h3>Student added successfully!</h3>");
+            // response.sendRedirect("studentList.jsp"); // Optional redirect to list
+
+        } catch (SQLException e) {
+            out.println("<h3>Database error: " + e.getMessage() + "</h3>");
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            out.println("<h3>Invalid number format in input: " + e.getMessage() + "</h3>");
+        }
+    }
+}

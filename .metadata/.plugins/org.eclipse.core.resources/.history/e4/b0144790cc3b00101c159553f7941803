@@ -1,0 +1,233 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.model.student" %>
+<%@ page import="com.dao.HostelDAO" %>
+
+<%
+  String idParam = request.getParameter("id");
+  student student = null;
+  String errorMessage = null;
+
+  if (idParam != null) {
+    try {
+      int id = Integer.parseInt(idParam);
+      HostelDAO dao = new HostelDAO();
+      student = dao.getStudentById(id);
+      if (student == null) {
+        errorMessage = "Student not found for ID: " + id;
+      }
+    } catch (NumberFormatException e) {
+      errorMessage = "Invalid Student ID.";
+    } catch (Exception e) {
+      errorMessage = "Error fetching student details. Please try again later.";
+    }
+  } else {
+    errorMessage = "Student ID is required.";
+  }
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Update Student</title>
+  <style>
+    /* Root pink theme colors */
+    :root {
+      --pink-light: #fce4ec;
+      --pink-main: #f06292;
+      --pink-dark: #c2185b;
+      --gray-light: #f8f8f8;
+      --gray-dark: #555;
+    }
+
+    /* Reset & base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: var(--pink-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 50px 20px;
+      color: var(--gray-dark);
+    }
+
+    /* Container card */
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 12px 30px rgba(240, 98, 146, 0.2);
+      max-width: 480px;
+      width: 100%;
+      padding: 40px 35px;
+      animation: slideIn 0.7s ease forwards;
+      position: relative;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 25px;
+      color: var(--pink-main);
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 1.2px;
+      font-size: 1.8rem;
+    }
+
+    /* Form fields */
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: var(--pink-dark);
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: 2px solid var(--pink-light);
+      font-size: 1rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      font-family: inherit;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus {
+      border-color: var(--pink-main);
+      box-shadow: 0 0 8px var(--pink-main);
+      outline: none;
+    }
+
+    input[readonly] {
+      background-color: #eee;
+      color: #555;
+      cursor: not-allowed;
+    }
+
+    input[type="submit"] {
+      background-color: var(--pink-main);
+      color: white;
+      font-weight: 700;
+      font-size: 1.15rem;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      width: 100%;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 5px 15px rgba(240, 98, 146, 0.4);
+    }
+
+    input[type="submit"]:hover {
+      background-color: var(--pink-dark);
+      box-shadow: 0 7px 18px rgba(194, 24, 91, 0.6);
+    }
+
+    .error-message {
+      background-color: #f8d7da;
+      color: #842029;
+      border: 1px solid #f5c2c7;
+      padding: 14px 20px;
+      margin-bottom: 25px;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+      user-select: none;
+      letter-spacing: 0.03em;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      font-weight: 600;
+      color: var(--pink-main);
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: var(--pink-dark);
+      text-decoration: underline;
+    }
+  </style>
+
+  <script>
+    function validateForm() {
+      const feesPaid = parseFloat(document.forms["updateForm"]["feesPaid"].value);
+      const pendingFees = parseFloat(document.forms["updateForm"]["pendingFees"].value);
+
+      if (feesPaid < 0 || pendingFees < 0) {
+        alert("Fees paid and pending fees cannot be negative.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+</head>
+<body>
+
+  <div class="card">
+    <h2>✏️ Update Student Details</h2>
+
+    <% if (errorMessage != null) { %>
+      <div class="error-message"><%= errorMessage %></div>
+    <% } %>
+
+    <% if (student != null) { %>
+      <form name="updateForm" action="UpdateStudentServlet" method="post" onsubmit="return validateForm();">
+        <!-- Hidden input to send ID -->
+        <input type="hidden" name="id" value="<%= student.getId() %>" />
+
+        <!-- Visible readonly input for Student ID -->
+        <label for="id">Student ID</label>
+        <input type="text" id="id" name="id_display" value="<%= student.getId() %>" readonly />
+
+        <label for="name">Student Name</label>
+        <input type="text" id="name" name="name" value="<%= student.getName() %>" required maxlength="100" />
+
+        <label for="roomNumber">Room Number</label>
+        <input type="text" id="roomNumber" name="roomNumber" value="<%= student.getRoomNumber() %>" required maxlength="10" />
+
+        <label for="admissionDate">Admission Date</label>
+        <input type="date" id="admissionDate" name="admissionDate" value="<%= student.getAdmissionDate() %>" required />
+
+        <label for="feesPaid">Fees Paid</label>
+        <input type="number" id="feesPaid" name="feesPaid" step="0.01" min="0" value="<%= student.getFeesPaid() %>" required />
+
+        <label for="pendingFees">Pending Fees</label>
+        <input type="number" id="pendingFees" name="pendingFees" step="0.01" min="0" value="<%= student.getPendingFees() %>" required />
+
+        <input type="submit" value="Update Student" />
+      </form>
+    <% } %>
+
+    <a href="index.jsp" class="back-link">⬅️ Back to Home</a>
+  </div>
+
+</body>
+</html>

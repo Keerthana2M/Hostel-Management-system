@@ -1,0 +1,89 @@
+<%@ page import="java.util.*, com.model.student" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Hostel Student Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+        }
+        table {
+            width: 80%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #0066cc;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .back-button {
+            display: block;
+            width: 150px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Filtered Hostel Students Report</h2>
+
+<%
+    List<student> students = (List<student>) request.getAttribute("reportData");
+
+    if (students != null && !students.isEmpty()) {
+%>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Room No</th>
+                <th>Admission Date</th>
+                <th>Fees Paid</th>
+                <th>Pending Fees</th>
+            </tr>
+            <%
+                for (student s : students) {
+            %>
+            <tr>
+                <td><%= s.getId() %></td>
+                <td><%= s.getName() %></td>
+                <td><%= s.getRoomNumber() %></td>
+                <td><%= s.getAdmissionDate() %></td>
+                <td><%= s.getFeesPaid() %></td>
+                <td><%= s.getPendingFees() %></td>
+            </tr>
+            <% } %>
+        </table>
+<%
+    } else {
+%>
+        <p style="text-align: center; margin-top: 50px;">No records found for the selected criteria.</p>
+<%
+    }
+%>
+
+<a href="report_form.jsp" class="back-button">← Back to Report Form</a>
+
+</body>
+</html>

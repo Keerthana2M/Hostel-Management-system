@@ -1,0 +1,59 @@
+package com.servlet;
+
+import com.dao.HostelDAO;
+import com.model.student;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import javax.servlet.RequestDispatcher;
+import java.io.IOException;
+import java.sql.SQLException;
+
+@WebServlet("/updateStudent")
+public class UpdateStudentServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    private HostelDAO hostelDAO;
+
+    @Override
+    public void init() {
+        hostelDAO = new HostelDAO();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String name = request.getParameter("name");
+            String roomNumber = request.getParameter("roomNumber");
+            String admissionDate = request.getParameter("admissionDate"); // Format: yyyy-MM-dd
+            double feesPaid = Double.parseDouble(request.getParameter("feesPaid"));
+            double pendingFees = Double.parseDouble(request.getParameter("pendingFees"));
+
+            // Create Student object (make sure class name is capitalized)
+            student studentObj = new student(id, name, roomNumber, admissionDate, feesPaid, pendingFees);
+
+            boolean updated = hostelDAO.updateStudent(studentObj);
+
+            if (updated) {
+                response.sendRedirect("displayStudents"); // Servlet that lists students
+            } else {
+                request.setAttribute("error", "Update failed. Please try again.");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("editStudent.jsp");
+                dispatcher.forward(request, response);
+            }
+
+        } catch (NumberFormatException e) {
+            request.setAttribute("error", "Invalid input: " + e.getMessage());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("editStudent.jsp");
+            dispatcher.forward(request, response);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ServletException("Database error during student update", e);
+        }
+    }
+}

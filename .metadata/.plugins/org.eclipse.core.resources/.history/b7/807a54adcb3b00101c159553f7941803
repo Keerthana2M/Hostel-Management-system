@@ -1,0 +1,162 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="com.model.student" %>
+<%@ page import="com.dao.HostelDAO" %>
+
+<%
+  String idParam = request.getParameter("id");
+  student student = null;
+  String errorMessage = null;
+
+  if (idParam != null) {
+    try {
+      int id = Integer.parseInt(idParam);
+      HostelDAO dao = new HostelDAO();
+      student = dao.getStudentById(id);
+      if (student == null) {
+        errorMessage = "Student not found for ID: " + id;
+      }
+    } catch (NumberFormatException e) {
+      errorMessage = "Invalid Student ID.";
+    } catch (Exception e) {
+      errorMessage = "Error fetching student details. Please try again later.";
+    }
+  } else {
+    errorMessage = "Student ID is required.";
+  }
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Update Student</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #fce4ec, #e1f5fe);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+    h2 {
+      color: #f06292;
+      margin-bottom: 30px;
+    }
+    form {
+      background-color: #fff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 15px;
+      color: #444;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus {
+      border-color: #64b5f6;
+      outline: none;
+    }
+    input[type="submit"] {
+      background-color: #f06292;
+      color: white;
+      font-weight: bold;
+      margin-top: 25px;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      border-radius: 7px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    input[type="submit"]:hover {
+      background-color: #e91e63;
+    }
+    a {
+      margin-top: 20px;
+      display: inline-block;
+      color: #4a90e2;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .error-message {
+      color: #e53935;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  </style>
+  <script>
+    // Simple client-side validation
+    function validateForm() {
+      const feesPaid = parseFloat(document.forms["updateForm"]["feesPaid"].value);
+      const pendingFees = parseFloat(document.forms["updateForm"]["pendingFees"].value);
+
+      if (feesPaid < 0 || pendingFees < 0) {
+        alert("Fees paid and pending fees cannot be negative.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+</head>
+<body>
+
+  <h2>✏️ Update Student Details</h2>
+
+  <c:if test="${not empty errorMessage}">
+    <p class="error-message"><c:out value="${errorMessage}" /></p>
+  </c:if>
+
+  <%
+    if (student != null) {
+  %>
+  <form name="updateForm" action="UpdateStudentServlet" method="post" onsubmit="return validateForm();">
+    <input type="hidden" name="id" value="<c:out value='${student.id}' />" />
+
+    <label for="name">Student Name:</label>
+    <input type="text" id="name" name="name" value="<c:out value='${student.name}' />" required maxlength="100" />
+
+    <label for="roomNumber">Room Number:</label>
+    <input type="text" id="roomNumber" name="roomNumber" value="<c:out value='${student.roomNumber}' />" required maxlength="10" />
+
+    <label for="admissionDate">Admission Date:</label>
+    <input type="date" id="admissionDate" name="admissionDate" value="<c:out value='${student.admissionDate}' />" required />
+
+    <label for="feesPaid">Fees Paid:</label>
+    <input type="number" id="feesPaid" name="feesPaid" step="0.01" min="0" value="<c:out value='${student.feesPaid}' />" required />
+
+    <label for="pendingFees">Pending Fees:</label>
+    <input type="number" id="pendingFees" name="pendingFees" step="0.01" min="0" value="<c:out value='${student.pendingFees}' />" required />
+
+    <input type="submit" value="Update Student" />
+  </form>
+  <% } %>
+
+  <a href="index.jsp">⬅️ Back to Home</a>
+
+</body>
+</html>

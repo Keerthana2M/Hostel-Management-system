@@ -1,0 +1,47 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="model.Student" %>
+
+<html>
+<head>
+  <title>Report Results</title>
+</head>
+<body>
+<h2>Report Results</h2>
+<table border="1" cellpadding="5" cellspacing="0">
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Room Number</th>
+    <th>Admission Date</th>
+    <th>Fees Paid</th>
+    <th>Pending Fees</th>
+  </tr>
+
+  <%
+    List<Student> students = (List<Student>) request.getAttribute("students");
+    if (students != null && !students.isEmpty()) {
+      for (Student s : students) {
+  %>
+  <tr>
+    <td><%= s.getId() %></td>
+    <td><%= s.getName() %></td>
+    <td><%= s.getRoomNumber() %></td>
+    <td><%= s.getAdmissionDate() %></td>
+    <td><%= s.getFeesPaid() %></td>
+    <td><%= s.getPendingFees() %></td>
+  </tr>
+  <%
+    }
+  } else {
+  %>
+  <tr><td colspan="6">No records found.</td></tr>
+  <%
+    }
+  %>
+</table>
+<br>
+<a href="report_form.jsp">Back to Report Form</a><br>
+<a href="index.jsp">Back to Home</a>
+</body>
+</html>

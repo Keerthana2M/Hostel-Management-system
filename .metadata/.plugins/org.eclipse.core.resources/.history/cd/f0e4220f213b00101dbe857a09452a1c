@@ -1,0 +1,61 @@
+package com.servlet;
+
+import com.dao.HostelDAO;
+import com.model.student;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
+
+public class UpdateStudentServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    private HostelDAO hostelDAO;
+
+    @Override
+    public void init() {
+        hostelDAO = new HostelDAO();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        // Parse parameters safely
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String name = request.getParameter("name");
+            String roomNumber = request.getParameter("roomNumber");
+            String admissionDate = request.getParameter("admissionDate");
+            double feesPaid = Double.parseDouble(request.getParameter("feesPaid"));
+            double pendingFees = Double.parseDouble(request.getParameter("pendingFees"));
+
+            // Create student object
+            student studentObj = new student(id, name, roomNumber, admissionDate, feesPaid, pendingFees);
+
+            // Call DAO update method
+            boolean updated = hostelDAO.updateStudent(studentObj);
+
+            if (updated) {
+                // Redirect to list students page or servlet
+                response.sendRedirect("listStudents"); 
+            } else {
+                // If update failed, forward back to edit page with error
+                request.setAttribute("error", "Update failed. Please try again.");
+                request.getRequestDispatcher("editStudent.jsp").forward(request, response);
+            }
+
+        } catch (NumberFormatException e) {
+            // Handle invalid input (id, fees)
+            request.setAttribute("error", "Invalid number format in input.");
+            request.getRequestDispatcher("editStudent.jsp").forward(request, response);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ServletException("Database error during student update", e);
+        }
+    }
+}
