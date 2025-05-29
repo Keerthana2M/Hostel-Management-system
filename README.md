@@ -22,7 +22,7 @@ This project is a **Hostel Management System** built using Java (JSP + Servlets)
 ![Add Student](https://github.com/Keerthana2M/Hostel-Management-system/blob/master/output/Addstudent.png)
 
 ###  Delete Student
-![https://github.com/Keerthana2M/Hostel-Management-system/blob/master/output/DeleteStudent.png)
+![Delete Student](https://github.com/Keerthana2M/Hostel-Management-system/blob/master/output/DeleteStudent.png)
 
 ###  Update Student
 ![Update Student](https://github.com/Keerthana2M/Hostel-Management-system/blob/master/output/updatestudent.png)
